@@ -56,6 +56,7 @@
 } while(0)
 
 #define SPI_WAITFOREORx() do { \
+  while(REG(SSI0_BASE + SSI_SR) & SSI_SR_BSY); \
   while(!(REG(SSI0_BASE + SSI_SR) & SSI_SR_RNE)); \
 } while(0)
 
@@ -63,7 +64,6 @@
 #error "You must include spi-arch.h before spi.h for the CC2538."
 #endif
 #define SPI_FLUSH() do { \
-  SPI_WAITFOREORx(); \
   while (REG(SSI0_BASE + SSI_SR) & SSI_SR_RNE) { \
     SPI_RXBUF; \
   } \
