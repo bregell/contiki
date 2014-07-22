@@ -56,7 +56,6 @@
 } while(0)
 
 #define SPI_WAITFOREORx() do { \
-  while(REG(SSI0_BASE + SSI_SR) & SSI_SR_BSY); \
   while(!(REG(SSI0_BASE + SSI_SR) & SSI_SR_RNE)); \
 } while(0)
 
