@@ -50,6 +50,7 @@
 #include "dev/uart.h"
 #include "dev/watchdog.h"
 #include "dev/ioc.h"
+#include "dev/i2c.h"
 #include "dev/button-sensor.h"
 #include "dev/serial-line.h"
 #include "dev/slip.h"
@@ -148,7 +149,8 @@ main(void)
   lpm_init();
   rtimer_init();
   gpio_init();
-
+  i2c_init(I2C_SDA_PORT, I2C_SDA_PIN, I2C_SCL_PORT, I2C_SCL_PIN, I2C_SCL_FAST_BUS_SPEED);
+  
   leds_init();
   fade(LEDS_YELLOW);
 

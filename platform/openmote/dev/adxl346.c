@@ -44,7 +44,7 @@
  */
 
 /*---------------------------------------------------------------------------*/
-#include "i2c.h"
+#include "dev/i2c.h"
 #include "adxl346.h"
 /*---------------------------------------------------------------------------*/
 /* ADDRESS AND IDENTIFIER */
@@ -148,30 +148,30 @@
  *
  */
 void
-adx346_init(void)
+adxl346_init(void)
 {
   uint8_t config[2];
 
   config[0] = ADXL346_BW_RATE_ADDR;
   config[1] = (ADXL346_BW_RATE_RATE(11));
-  i2c_write_bytes(ADXL346_ADDRESS, config, sizeof(config));
+  i2c_burst_send(ADXL346_ADDRESS, config, sizeof(config));
 
   config[0] = ADXL346_DATA_FORMAT_ADDR;
   config[1] = (ADXL346_DATA_FORMAT_SELF_TEST |
                ADXL346_DATA_FORMAT_FULL_RES |
                ADXL346_DATA_FORMAT_RANGE_PM_16g);
-  i2c_write_bytes(ADXL346_ADDRESS, config, sizeof(config));
+  i2c_burst_send(ADXL346_ADDRESS, config, sizeof(config));
 
   config[0] = ADXL346_POWER_CTL_ADDR;
   config[1] = (ADXL346_POWER_CTL_MEASURE);
-  i2c_write_bytes(ADXL346_ADDRESS, config, sizeof(config));
+  i2c_burst_send(ADXL346_ADDRESS, config, sizeof(config));
 }
 /*---------------------------------------------------------------------------*/
 /**
  *
  */
 void
-adx346_reset(void)
+adxl346_reset(void)
 {
 }
 /*---------------------------------------------------------------------------*/
@@ -179,12 +179,12 @@ adx346_reset(void)
  *
  */
 uint8_t
-adx346_is_present(void)
+adxl346_is_present(void)
 {
   uint8_t is_present;
 
-  i2c_write_byte(ADXL346_ADDRESS, ADXL346_DEVID_ADDR);
-  i2c_read_byte(ADXL346_ADDRESS, &is_present);
+  i2c_single_send(ADXL346_ADDRESS, ADXL346_DEVID_ADDR);
+  i2c_single_receive(ADXL346_ADDRESS, &is_present);
 
   return is_present == ADXL346_DEVID_VALUE;
 }
@@ -193,15 +193,15 @@ adx346_is_present(void)
  *
  */
 uint16_t
-adx346_read_x(void)
+adxl346_read_x(void)
 {
   uint8_t acceleration[2];
   uint16_t x;
 
-  i2c_write_byte(ADXL346_ADDRESS, ADXL346_DATAX0_ADDR);
-  i2c_read_byte(ADXL346_ADDRESS, &acceleration[0]);
-  i2c_write_byte(ADXL346_ADDRESS, ADXL346_DATAX1_ADDR);
-  i2c_read_byte(ADXL346_ADDRESS, &acceleration[1]);
+  i2c_single_send(ADXL346_ADDRESS, ADXL346_DATAX0_ADDR);
+  i2c_single_receive(ADXL346_ADDRESS, &acceleration[0]);
+  i2c_single_send(ADXL346_ADDRESS, ADXL346_DATAX1_ADDR);
+  i2c_single_receive(ADXL346_ADDRESS, &acceleration[1]);
 
   x = (acceleration[0] << 8) | acceleration[1];
 
@@ -212,15 +212,15 @@ adx346_read_x(void)
  *
  */
 uint16_t
-adx346_read_y(void)
+adxl346_read_y(void)
 {
   uint8_t acceleration[2];
   uint16_t y;
 
-  i2c_write_byte(ADXL346_ADDRESS, ADXL346_DATAY0_ADDR);
-  i2c_read_byte(ADXL346_ADDRESS, &acceleration[0]);
-  i2c_write_byte(ADXL346_ADDRESS, ADXL346_DATAY1_ADDR);
-  i2c_read_byte(ADXL346_ADDRESS, &acceleration[1]);
+  i2c_single_send(ADXL346_ADDRESS, ADXL346_DATAY0_ADDR);
+  i2c_single_receive(ADXL346_ADDRESS, &acceleration[0]);
+  i2c_single_send(ADXL346_ADDRESS, ADXL346_DATAY1_ADDR);
+  i2c_single_receive(ADXL346_ADDRESS, &acceleration[1]);
 
   y = (acceleration[0] << 8) | acceleration[1];
 
@@ -231,15 +231,15 @@ adx346_read_y(void)
  *
  */
 uint16_t
-adx346_read_z(void)
+adxl346_read_z(void)
 {
   uint8_t acceleration[2];
   uint16_t z;
 
-  i2c_write_byte(ADXL346_ADDRESS, ADXL346_DATAZ0_ADDR);
-  i2c_read_byte(ADXL346_ADDRESS, &acceleration[0]);
-  i2c_write_byte(ADXL346_ADDRESS, ADXL346_DATAZ1_ADDR);
-  i2c_read_byte(ADXL346_ADDRESS, &acceleration[1]);
+  i2c_single_send(ADXL346_ADDRESS, ADXL346_DATAZ0_ADDR);
+  i2c_single_receive(ADXL346_ADDRESS, &acceleration[0]);
+  i2c_single_send(ADXL346_ADDRESS, ADXL346_DATAZ1_ADDR);
+  i2c_single_receive(ADXL346_ADDRESS, &acceleration[1]);
 
   z = (acceleration[0] << 8) | acceleration[1];
 

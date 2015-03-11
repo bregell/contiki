@@ -44,7 +44,7 @@
  */
 
 /*---------------------------------------------------------------------------*/
-#include "i2c.h"
+#include "dev/i2c.h"
 #include "sht21.h"
 /*---------------------------------------------------------------------------*/
 #define SHT21_ADDRESS                   (0x40)
@@ -96,8 +96,8 @@ sht21_init(void)
   config[1] = 0;
 
   /* Read the current configuration according to the datasheet (pag. 9, fig. 18) */
-  i2c_write_byte(SHT21_ADDRESS, SHT21_USER_REG_READ);
-  i2c_read_byte(SHT21_ADDRESS, &config[1]);
+  i2c_single_send(SHT21_ADDRESS, SHT21_USER_REG_READ);
+  i2c_single_receive(SHT21_ADDRESS, &config[1]);
 
   /* Clean all the configuration bits except those reserved */
   config[1] &= SHT21_USER_REG_RESERVED_BITS;
@@ -105,7 +105,7 @@ sht21_init(void)
   /* Set the configuration bits without changing those reserved */
   config[1] |= SHT21_USER_CONFIG;
 
-  i2c_write_byte(SHT21_ADDRESS, config, sizeof(config));
+  i2c_burst_send(SHT21_ADDRESS, config, sizeof(config));
 }
 /*---------------------------------------------------------------------------*/
 /**
@@ -115,7 +115,7 @@ void
 sht21_reset(void)
 {
   /* Send a soft-reset command according to the datasheet (pag. 9, fig. 17) */
-  i2c_write_byte(SHT21_ADDRESS, SHT21_RESET_CMD);
+  i2c_single_send(SHT21_ADDRESS, SHT21_RESET_CMD);
 }
 /*---------------------------------------------------------------------------*/
 /**
@@ -127,8 +127,8 @@ sht21_is_present(void)
   uint8_t is_present;
 
   /* Read the current configuration according to the datasheet (pag. 9, fig. 18) */
-  i2c_write_byte(SHT21_ADDRESS, SHT21_USER_REG_READ);
-  i2c_read_byte(SHT21_ADDRESS, &is_present);
+  i2c_single_send(SHT21_ADDRESS, SHT21_USER_REG_READ);
+  i2c_single_receive(SHT21_ADDRESS, &is_present);
 
   /* Clear the reserved bits according to the datasheet (pag. 9, tab. 8) */
   is_present &= ~SHT21_USER_REG_RESERVED_BITS;
@@ -146,8 +146,8 @@ sht21_read_temperature(void)
   uint16_t temperature;
 
   /* Read the current temperature according to the datasheet (pag. 8, fig. 15) */
-  i2c_write_byte(SHT21_ADDRESS, SHT21_TEMPERATURE_HM_CMD);
-  i2c_read_bytes(SHT21_ADDRESS, sht21_temperature, sizeof(sht21_temperature));
+  i2c_single_send(SHT21_ADDRESS, SHT21_TEMPERATURE_HM_CMD);
+  i2c_burst_receive(SHT21_ADDRESS, sht21_temperature, sizeof(sht21_temperature));
 
   temperature = (sht21_temperature[0] << 8) | (sht21_temperature[1] & SHT21_STATUS_MASK);
 
@@ -178,8 +178,8 @@ sht21_read_humidity(void)
   uint16_t humidity;
 
   /* Read the current humidity according to the datasheet (pag. 8, fig. 15) */
-  i2c_write_byte(SHT21_ADDRESS, SHT21_HUMIDITY_HM_CMD);
-  i2c_read_bytes(SHT21_ADDRESS, sht21_humidity, sizeof(sht21_humidity));
+  i2c_single_send(SHT21_ADDRESS, SHT21_HUMIDITY_HM_CMD);
+  i2c_burst_receive(SHT21_ADDRESS, sht21_humidity, sizeof(sht21_humidity));
 
   humidity = (sht21_humidity[0] << 8) | (sht21_humidity[1] & SHT21_STATUS_MASK);
 

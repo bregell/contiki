@@ -44,7 +44,7 @@
  */
 
 /*---------------------------------------------------------------------------*/
-#include "i2c.h"
+#include "dev/i2c.h"
 #include "max44009.h"
 /*---------------------------------------------------------------------------*/
 /* ADDRESS AND NOT_FOUND VALUE */
@@ -109,9 +109,9 @@ max44009_init(void)
   max44009_value[4] = (0xFF);
 
   for(i = 0; i < sizeof(max44009_address); i++) {
-    max44009_data[0] = max44009_value[i];
-    max44009_data[1] = max44009_data[i];
-    i2c_write_bytes(MAX44009_ADDRESS, max44009_data, 2);
+    max44009_data[0] = max44009_address[i];
+    max44009_data[1] = max44009_value[i];
+    i2c_burst_send(MAX44009_ADDRESS, max44009_data, 2);
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -129,9 +129,9 @@ max44009_reset(void)
   uint8_t i;
 
   for(i = 0; i < sizeof(max44009_address); i++) {
-    max44009_data[0] = max44009_value[i];
-    max44009_data[1] = max44009_data[i];
-    i2c_write_bytes(MAX44009_ADDRESS, max44009_data, 2);
+    max44009_data[0] = max44009_address[i];
+    max44009_data[1] = max44009_value[i];
+    i2c_burst_send(MAX44009_ADDRESS, max44009_data, 2);
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -143,8 +143,8 @@ max44009_is_present(void)
 {
   uint8_t is_present;
 
-  i2c_write_byte(MAX44009_ADDRESS, MAX44009_CONFIG_ADDR);
-  i2c_read_byte(MAX44009_ADDRESS, &is_present);
+  i2c_single_send(MAX44009_ADDRESS, MAX44009_CONFIG_ADDR);
+  i2c_single_receive(MAX44009_ADDRESS, &is_present);
 
   return is_present != MAX44009_NOT_FOUND;
 }
@@ -159,10 +159,10 @@ max44009_read_light(void)
   uint8_t max44009_data[2];
   uint16_t result;
 
-  i2c_write_byte(MAX44009_ADDRESS, MAX44009_LUX_HIGH_ADDR);
-  i2c_read_byte(MAX44009_ADDRESS, &max44009_data[0]);
-  i2c_write_byte(MAX44009_ADDRESS, MAX44009_LUX_LOW_ADDR);
-  i2c_read_byte(MAX44009_ADDRESS, &max44009_data[1]);
+  i2c_single_send(MAX44009_ADDRESS, MAX44009_LUX_HIGH_ADDR);
+  i2c_single_receive(MAX44009_ADDRESS, &max44009_data[0]);
+  i2c_single_send(MAX44009_ADDRESS, MAX44009_LUX_LOW_ADDR);
+  i2c_single_receive(MAX44009_ADDRESS, &max44009_data[1]);
 
   exponent = ((max44009_data[0] >> 4) & 0x0E);
   mantissa = ((max44009_data[0] & 0x0F) << 4) | (max44009_data[1] & 0x0F);
