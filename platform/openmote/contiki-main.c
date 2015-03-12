@@ -43,6 +43,7 @@
 
 /*---------------------------------------------------------------------------*/
 #include "contiki.h"
+#include "dev/adc.h"
 #include "dev/leds.h"
 #include "dev/sys-ctrl.h"
 #include "dev/scb.h"
@@ -50,7 +51,6 @@
 #include "dev/uart.h"
 #include "dev/watchdog.h"
 #include "dev/ioc.h"
-#include "dev/i2c.h"
 #include "dev/button-sensor.h"
 #include "dev/serial-line.h"
 #include "dev/slip.h"
@@ -68,6 +68,7 @@
 #include "ieee-addr.h"
 #include "lpm.h"
 
+#include "dev/i2c.h"
 #include "antenna.h"
 
 #include <stdint.h>
@@ -209,11 +210,13 @@ main(void)
   antenna_init();
   PRINTF(" Antenna: external\n");
 
-#if UIP_CONF_IPV6
+#if NETSTACK_CONF_WITH_IPV6
   memcpy(&uip_lladdr.addr, &linkaddr_node_addr, sizeof(uip_lladdr.addr));
   queuebuf_init();
   process_start(&tcpip_process, NULL);
-#endif /* UIP_CONF_IPV6 */
+#endif /* NETSTACK_CONF_WITH_IPV6 */
+
+  adc_init();
 
   process_start(&sensors_process, NULL);
 
