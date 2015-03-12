@@ -89,27 +89,78 @@ SENSORS_SENSOR("Humidity Sensor", &humidity_sensor, sht21_value, sht21_config, s
 /**
  *
  */
-void
-sht21_init(void)
+int sht21_value(int type)
 {
-  uint8_t config[2];
+  switch(type) {
+    case SHT21_TEMP_VAL :
+      return (int)sht21_read_temperature();
+    case SHT21_HUMIDITY_VAL :
+      return (int)sht21_read_humidity();
+  }
+  return 0;
+}
+/**
+ *
+ */
+int sht21_config(int type, int value)
+{
+  switch(type) {
+    case SENSORS_ACTIVE :
+      return 0;
+    case SENSORS_CONFIG :
+      switch(value) {
+        case 0
+          sht21_set_config(SHT21_DEFAULT_CONFIG);
+          break;
+        case 1
+          sht21_set_config(SHT21_USER_CONFIG);
+          break;
+        default :
+          sht21_set_config(value);
+          break;
+      }
+      break;
+  }
+  return 0;
+}
+/**
+ *
+ */
+int sht21_status(int type){
+  return (int)sht21_is_present();
+}
+/**
+ *
+ */
+void sht21_set_config(uint8_t config)
+{
+  uint8_t data[2];
 
   /* Setup the configuration vector, the first position holds address */
   /* and the second position holds the actual configuration */
-  config[0] = SHT21_USER_REG_WRITE;
-  config[1] = 0;
+  data[0] = SHT21_USER_REG_WRITE;
+  data[1] = 0;
 
   /* Read the current configuration according to the datasheet (pag. 9, fig. 18) */
   i2c_single_send(SHT21_ADDRESS, SHT21_USER_REG_READ);
-  i2c_single_receive(SHT21_ADDRESS, &config[1]);
+  i2c_single_receive(SHT21_ADDRESS, &data[1]);
 
   /* Clean all the configuration bits except those reserved */
-  config[1] &= SHT21_USER_REG_RESERVED_BITS;
+  data[1] &= SHT21_USER_REG_RESERVED_BITS;
 
   /* Set the configuration bits without changing those reserved */
-  config[1] |= SHT21_USER_CONFIG;
+  data[1] |= config;
 
-  i2c_burst_send(SHT21_ADDRESS, config, sizeof(config));
+  i2c_burst_send(SHT21_ADDRESS, data, sizeof(data));
+}
+/*---------------------------------------------------------------------------*/
+/**
+ *
+ */
+void
+sht21_init(void)
+{
+  sht21_set_config(SHT21_USER_CONFIG);
 }
 /*---------------------------------------------------------------------------*/
 /**
@@ -167,7 +218,7 @@ sht21_convert_temperature(uint16_t temperature)
   float result;
 
   result = -46.85;
-  result += 175.72 * temperature / 65536;
+  result += 175.72 * (temperature / 65536;
 
   return result;
 }
