@@ -89,6 +89,9 @@
                                              MAX44009_CONFIG_CDR_NORMAL | \
                                              MAX44009_CONFIG_INTEGRATION_100ms)
 /*---------------------------------------------------------------------------*/
+const struct sensors_sensor light_sensor;
+SENSORS_SENSOR("Acceleration Sensor", &light_sensor, max44009_value, max44009_config, max44009_status);
+/*---------------------------------------------------------------------------*/
 /**
  *
  */

@@ -82,6 +82,10 @@
                                          SHT21_BATTERY_ABOVE_2V25 | \
                                          SHT21_OTP_RELOAD_DISABLE)
 /*---------------------------------------------------------------------------*/
+const struct sensors_sensor temp_sensor, humidity_sensor;
+SENSORS_SENSOR("Temp Sensor", &temp_sensor, sht21_value, sht21_config, sht21_status);
+SENSORS_SENSOR("Humidity Sensor", &humidity_sensor, sht21_value, sht21_config, sht21_status);
+/*---------------------------------------------------------------------------*/
 /**
  *
  */

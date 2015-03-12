@@ -144,6 +144,9 @@
 #define ADXL346_DATA_FORMAT_RANGE_PM_8g     (2)
 #define ADXL346_DATA_FORMAT_RANGE_PM_16g    (3)
 /*---------------------------------------------------------------------------*/
+const struct sensors_sensor acceleration_sensor;
+SENSORS_SENSOR("Acceleration Sensor", &acceleration_sensor, adxl346_value, adxl346_config, adxl346_status);
+/*---------------------------------------------------------------------------*/
 /**
  *
  */
