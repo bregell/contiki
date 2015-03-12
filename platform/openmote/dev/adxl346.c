@@ -144,6 +144,59 @@
 #define ADXL346_DATA_FORMAT_RANGE_PM_8g     (2)
 #define ADXL346_DATA_FORMAT_RANGE_PM_16g    (3)
 /*---------------------------------------------------------------------------*/
+const struct sensors_sensor acceleration_sensor;
+SENSORS_SENSOR("Acceleration Sensor", &acceleration_sensor, adxl346_value, adxl346_config, adxl346_status);
+/**
+ *
+ */
+int adxl346_value(int type)
+{
+  switch(type) {
+    case adxl346_TEMP_VAL :
+      return (int)adxl346_read_temperature();
+    case adxl346_HUMIDITY_VAL :
+      return (int)adxl346_read_humidity();
+  }
+  return 0;
+}
+/**
+ *
+ */
+int adxl346_config(int type, int value)
+{
+  switch(type) {
+    case SENSORS_ACTIVE :
+      switch(value) {
+        case 0
+          adxl346_set_config(ADXL346_POWER_CTL_ADDR, 0);
+          break;
+        case 1
+          adxl346_set_config(ADXL346_POWER_CTL_ADDR, ADXL346_POWER_CTL_MEASURE);
+          break;
+      }
+      break;
+    case SENSORS_CONFIG :
+      adxl346_set_config(value[0], value[1]);
+      break;
+  }
+  return 0;
+}
+/**
+ *
+ */
+int adxl346_status(int type){
+  return (int)adxl346_is_present();
+}
+/**
+ *
+ */
+void adxl346_set_config(uint8_t reg, uint8_t config){
+  uint8_t data[2];
+  data[0] = reg;
+  data[1] = config;
+  i2c_burst_send(ADXL346_ADDRESS, data, sizeof(data));
+}
+/*---------------------------------------------------------------------------*/
 /**
  *
  */

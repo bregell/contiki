@@ -89,6 +89,49 @@
                                              MAX44009_CONFIG_CDR_NORMAL | \
                                              MAX44009_CONFIG_INTEGRATION_100ms)
 /*---------------------------------------------------------------------------*/
+const struct sensors_sensor light_sensor;
+SENSORS_SENSOR("Acceleration Sensor", &light_sensor, max44009_value, max44009_config, max44009_status);
+/**
+ *
+ */
+int max44009_value(int type)
+{
+  switch(type) {
+    case MAX44009_LIGHT_VAL :
+      return (int)max44009_read_light();
+  }
+  return 0;
+}
+/**
+ *
+ */
+int max44009_config(int type, int value)
+{
+  switch(type) {
+    case SENSORS_ACTIVE :
+      return 0;
+    case SENSORS_CONFIG :
+      max44009_set_config(value[0], value[1]);
+      break;
+  }
+  return 0;
+}
+/**
+ *
+ */
+int max44009_status(int type){
+  return (int)max44009_is_present();
+}
+/**
+ *
+ */
+void max44009_set_config(uint8_t reg, uint8_t config){
+  uint8_t data[2];
+  data[0] = reg;
+  data[1] = config;
+  i2c_burst_send(MAX44009_ADDRESS, data, sizeof(data));
+}
+/*---------------------------------------------------------------------------*/
 /**
  *
  */

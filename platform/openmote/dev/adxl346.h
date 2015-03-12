@@ -45,6 +45,10 @@
 
 #ifndef __ADXL346_H__
 #define __ADXL346_H__
+#define ADXL346_X_VAL	0
+#define ADXL346_Y_VAL 	0
+#define ADXL346_Z_VAL 	0
+extern const struct sensors_sensor acceleration_sensor;
 /*---------------------------------------------------------------------------*/
 void adxl346_init(void);
 void adxl346_reset(void);
@@ -52,6 +56,10 @@ uint8_t adxl346_is_present(void);
 uint16_t adxl346_read_x(void);
 uint16_t adxl346_read_y(void);
 uint16_t adxl346_read_z(void);
+/*---------------------------------------------------------------------------*/
+int adxl346_value(int type);
+int adxl346_config(int type, int value);
+int adxl346_status(int type);
 /*---------------------------------------------------------------------------*/
 #endif /* ifndef __ADXL346_H__ */
 /** @} */
