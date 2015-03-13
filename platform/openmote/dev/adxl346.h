@@ -45,10 +45,14 @@
 
 #ifndef __ADXL346_H__
 #define __ADXL346_H__
-#define ADXL346_X_VAL	0
-#define ADXL346_Y_VAL 	0
-#define ADXL346_Z_VAL 	0
-extern const struct sensors_sensor acceleration_sensor;
+
+#include "lib/sensors.h"
+
+#define SENSORS_CONFIG      0xFF
+#define ADXL346_X_VAL       0
+#define ADXL346_Y_VAL       1
+#define ADXL346_Z_VAL       2
+
 /*---------------------------------------------------------------------------*/
 void adxl346_init(void);
 void adxl346_reset(void);
@@ -57,9 +61,8 @@ uint16_t adxl346_read_x(void);
 uint16_t adxl346_read_y(void);
 uint16_t adxl346_read_z(void);
 /*---------------------------------------------------------------------------*/
-int adxl346_value(int type);
-int adxl346_config(int type, int value);
-int adxl346_status(int type);
+void adxl346_set_config(int reg, int config);
 /*---------------------------------------------------------------------------*/
+extern const struct sensors_sensor acceleration_sensor;
 #endif /* ifndef __ADXL346_H__ */
 /** @} */

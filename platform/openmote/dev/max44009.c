@@ -44,8 +44,9 @@
  */
 
 /*---------------------------------------------------------------------------*/
+#include "lib/sensors.h"
 #include "dev/i2c.h"
-#include "max44009.h"
+#include "dev/max44009.h"
 /*---------------------------------------------------------------------------*/
 /* ADDRESS AND NOT_FOUND VALUE */
 #define MAX44009_ADDRESS                    (0x4A)
@@ -89,8 +90,7 @@
                                              MAX44009_CONFIG_CDR_NORMAL | \
                                              MAX44009_CONFIG_INTEGRATION_100ms)
 /*---------------------------------------------------------------------------*/
-const struct sensors_sensor light_sensor;
-SENSORS_SENSOR("Acceleration Sensor", &light_sensor, max44009_value, max44009_config, max44009_status);
+SENSORS_SENSOR(light_sensor, "Acceleration Sensor", max44009_value, max44009_config, max44009_status);
 /**
  *
  */
@@ -108,10 +108,13 @@ int max44009_value(int type)
 int max44009_config(int type, int value)
 {
   switch(type) {
+    case SENSORS_HW_INIT :
+      max44009_init();
+      return 0;
     case SENSORS_ACTIVE :
       return 0;
     case SENSORS_CONFIG :
-      max44009_set_config(value[0], value[1]);
+      //max44009_set_config(value[0], value[1]);
       break;
   }
   return 0;
@@ -226,7 +229,7 @@ max44009_convert_light(uint16_t lux)
 
   exponent = (lux >> 8) & 0xFF;
   exponent = (exponent == 0x0F ? exponent & 0x0E : exponent);
-  
+
   mantissa = (lux >> 0) & 0xFF;
 
   result *= 2 ^ exponent * mantissa;

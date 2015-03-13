@@ -38,16 +38,16 @@
  * \file
  * Implementation of a generic module controlling OpenMote-CC2538 sensors.
  */
-
+#ifndef OPENMOTE_SENSORS_H_
+#define OPENMOTE_SENSORS_H_
 /*---------------------------------------------------------------------------*/
-#include "contiki.h"
+#include "lib/sensors.h"
 #include "dev/button-sensor.h"
 #include "dev/cc2538-sensors.h"
 #include "dev/sht21.h"
 #include "dev/max44009.h"
 #include "dev/adxl346.h"
 
-#include <string.h>
 /*---------------------------------------------------------------------------*/
 /**
    *\brief Exports a global symbol to be used by the sensor API
@@ -55,3 +55,4 @@
 SENSORS(&button_user_sensor, &cc2538_temp_sensor, &vdd3_sensor, &temp_sensor, &humidity_sensor, &light_sensor, &acceleration_sensor);
 /*---------------------------------------------------------------------------*/
 /** @} */
+#endif

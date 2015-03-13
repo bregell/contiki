@@ -49,7 +49,7 @@ static void res_get_handler(void *request, void *response, uint8_t *buffer, uint
  * If a smaller block size is requested for CoAP, the REST framework automatically splits the data.
  */
 RESOURCE(res_hello,
-         "title=\"Hello world: ?len=0..\";rt=\"Text\"",
+         "title=\"Hello world\";rt=\"Text\"",
          res_get_handler,
          NULL,
          NULL,
@@ -75,7 +75,8 @@ res_get_handler(void *request, void *response, uint8_t *buffer, uint16_t preferr
     memcpy(buffer, message, length);
   } else {
     memcpy(buffer, message, length);
-  } REST.set_header_content_type(response, REST.type.TEXT_PLAIN); /* text/plain is the default, hence this option could be omitted. */
+  }
+  REST.set_header_content_type(response, REST.type.TEXT_PLAIN); /* text/plain is the default, hence this option could be omitted. */
   REST.set_header_etag(response, (uint8_t *)&length, 1);
   REST.set_response_payload(response, buffer, length);
 }

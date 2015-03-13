@@ -45,7 +45,12 @@
 
 #ifndef __MAX44009_H__
 #define __MAX44009_H__
-#define MAX44009_LIGHT_VAL	0
+
+#include "lib/sensors.h"
+
+#define SENSORS_CONFIG      0xFF
+#define MAX44009_LIGHT_VAL    0
+
 extern const struct sensors_sensor light_sensor;
 /*---------------------------------------------------------------------------*/
 void max44009_init(void);
@@ -56,7 +61,7 @@ float max44009_convert_light(uint16_t light);
 /*---------------------------------------------------------------------------*/
 int max44009_value(int type);
 int max44009_config(int type, int value);
-int max44009_status(int type);h
+int max44009_status(int type);
 /*---------------------------------------------------------------------------*/
 #endif /* ifndef __MAX44009_H__ */
 /** @} */

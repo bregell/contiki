@@ -44,8 +44,9 @@
  */
 
 /*---------------------------------------------------------------------------*/
+#include "lib/sensors.h"
 #include "dev/i2c.h"
-#include "sht21.h"
+#include "dev/sht21.h"
 /*---------------------------------------------------------------------------*/
 #define SHT21_ADDRESS                   (0x40)
 
@@ -82,9 +83,9 @@
                                          SHT21_BATTERY_ABOVE_2V25 | \
                                          SHT21_OTP_RELOAD_DISABLE)
 /*---------------------------------------------------------------------------*/
-const struct sensors_sensor temp_sensor, humidity_sensor;
-SENSORS_SENSOR("Temp Sensor", &temp_sensor, sht21_value, sht21_config, sht21_status);
-SENSORS_SENSOR("Humidity Sensor", &humidity_sensor, sht21_value, sht21_config, sht21_status);
+//const struct sensors_sensor temp_sensor, humidity_sensor;
+SENSORS_SENSOR(temp_sensor, "Temp Sensor", sht21_value, sht21_config, sht21_status);
+SENSORS_SENSOR(humidity_sensor, "Humidity Sensor", sht21_value, sht21_config, sht21_status);
 /*---------------------------------------------------------------------------*/
 /**
  *
@@ -105,14 +106,17 @@ int sht21_value(int type)
 int sht21_config(int type, int value)
 {
   switch(type) {
+    case SENSORS_HW_INIT :
+      sht21_init();
+      return 0;
     case SENSORS_ACTIVE :
       return 0;
     case SENSORS_CONFIG :
       switch(value) {
-        case 0
+        case 0 :
           sht21_set_config(SHT21_DEFAULT_CONFIG);
           break;
-        case 1
+        case 1 :
           sht21_set_config(SHT21_USER_CONFIG);
           break;
         default :
@@ -218,7 +222,7 @@ sht21_convert_temperature(uint16_t temperature)
   float result;
 
   result = -46.85;
-  result += 175.72 * (temperature / 65536;
+  result += 175.72 * (temperature / 65536);
 
   return result;
 }

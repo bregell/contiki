@@ -60,7 +60,8 @@
  * The build system automatically compiles the resources in the corresponding sub-directory.
  */
 extern resource_t
-  res_hello;
+  res_hello,
+  res_temp;
 
 PROCESS(er_example_server, "Erbium Example Server");
 AUTOSTART_PROCESSES(&er_example_server);
@@ -94,6 +95,13 @@ PROCESS_THREAD(er_example_server, ev, data)
    * All static variables are the same for each URI path.
    */
   rest_activate_resource(&res_hello, "test/hello");
+  rest_activate_resource(&res_temp, "sensors/temp");
+  //rest_activate_resource(&res_humidity, "sensors/humididty");
+  //rest_activate_resource(&res_light, "sensors/light");
+  //rest_activate_resource(&res_accelerometer, "sensors/accelerometer");
+  //rest_activate_resource(&res_vdd3, "sensors/vdd3");
+
+
 
   /* Define application-specific events here. */
   while(1) {

@@ -48,8 +48,10 @@
 
 #include "lib/sensors.h"
 
-#define SHT21_TEMP_VAL 		0
-#define SHT21_HUMIDITY_VAL 	1
+#define SENSORS_CONFIG      0xFF
+#define SHT21_TEMP_VAL      0
+#define SHT21_HUMIDITY_VAL  1
+
 extern const struct sensors_sensor temp_sensor, humidity_sensor;
 /*---------------------------------------------------------------------------*/
 void sht21_init(void);
