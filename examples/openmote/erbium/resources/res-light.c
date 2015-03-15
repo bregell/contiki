@@ -4,7 +4,7 @@
 
 /**
  * \file
- *      Temperature Resource Openmote
+ *      Light Resource Openmote
  * \author
  *      Johan Bregell <johan@bregell.se>
  */
@@ -14,24 +14,6 @@
 #include "dev/leds.h"
 #include "rest-engine.h"
 #include "dev/sht21.h"
-static void
-fade(unsigned char l)
-{
-  volatile int i;
-  int k, j;
-  for(k = 0; k < 800; ++k) {
-    j = k > 400 ? 800 - k : k;
-
-    leds_on(l);
-    for(i = 0; i < j; ++i) {
-      asm ("nop");
-    }
-    leds_off(l);
-    for(i = 0; i < 400 - j; ++i) {
-      asm ("nop");
-    }
-  }
-}
 
 static void res_get_handler(void *request, void *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 
@@ -41,8 +23,8 @@ static void res_get_handler(void *request, void *response, uint8_t *buffer, uint
  * preferred_size and offset, but must respect the REST_MAX_CHUNK_SIZE limit for the buffer.
  * If a smaller block size is requested for CoAP, the REST framework automatically splits the data.
  */
-RESOURCE(res_temp,
-         "title=\"Temperature\";rt=\"temperature\"",
+RESOURCE(res_light,
+         "title=\"Light\";rt=\"light\"",
          res_get_handler,
          NULL,
          NULL,
@@ -51,24 +33,21 @@ RESOURCE(res_temp,
 static void
 res_get_handler(void *request, void *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
-  uint16_t sht21_raw_temp = temp_sensor.value(SHT21_TEMP_VAL);
+  uint16_t max44009_raw_light = light_sensor.value(MAX44009_LIGHT_VAL);
   unsigned int accept = -1;
 
   REST.get_header_accept(request, &accept);
   if(accept == -1 || accept == REST.type.TEXT_PLAIN){
     REST.set_header_content_type(request, REST.type.TEXT_PLAIN);
-    snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "%u", (int)sht21_raw_temp);
+    snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "%u", (int)max44009_raw_light);
     REST.set_response_payload(response, (uint8_t *)buffer, strlen((char *)buffer));
-    fade(LEDS_GREEN);
   } else if(accept == REST.type.APPLICATION_JSON){
     REST.set_header_content_type(request, REST.type.APPLICATION_JSON);
-    snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "{'raw_temp':%u}", (int)sht21_raw_temp);
+    snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "{'raw_light':%u, 'Conv':'2^Exp*Mant*0.72','where':{'Exp':'8*B8+4*B7+2*B6+B5','Mant':'8*B4+4*B3+2*B2+B1'}}", (int)max44009_raw_light);
     REST.set_response_payload(response, (uint8_t *)buffer, strlen((char *)buffer));
-    fade(LEDS_GREEN);
   } else {
     REST.set_response_status(response, REST.status.NOT_ACCEPTABLE);
     const char *msg = "Supporting content-types text/plain and application/json";
     REST.set_response_payload(response, msg, strlen(msg));
-    fade(LEDS_RED);
   }
 }

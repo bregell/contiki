@@ -96,8 +96,8 @@ PROCESS_THREAD(er_example_server, ev, data)
    */
   rest_activate_resource(&res_hello, "test/hello");
   rest_activate_resource(&res_temp, "sensors/temp");
-  //rest_activate_resource(&res_humidity, "sensors/humididty");
-  //rest_activate_resource(&res_light, "sensors/light");
+  rest_activate_resource(&res_humidity, "sensors/humididty");
+  rest_activate_resource(&res_light, "sensors/light");
   //rest_activate_resource(&res_accelerometer, "sensors/accelerometer");
   //rest_activate_resource(&res_vdd3, "sensors/vdd3");
 

@@ -90,7 +90,7 @@
                                              MAX44009_CONFIG_CDR_NORMAL | \
                                              MAX44009_CONFIG_INTEGRATION_100ms)
 /*---------------------------------------------------------------------------*/
-SENSORS_SENSOR(light_sensor, "Acceleration Sensor", max44009_value, max44009_config, max44009_status);
+SENSORS_SENSOR(light_sensor, "Light Sensor", max44009_value, max44009_config, max44009_status);
 /**
  *
  */
