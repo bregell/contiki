@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Institute for Pervasive Computing, ETH Zurich
+ * Copyright (c) 2013, Johan Bregell, i3tex AB
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,10 +30,16 @@
  */
 
 /**
+ * \addtogroup openmote-examples 
+ * @{
+ * 
+ * \defgroup openmote-erbium-server Erbium server for the OpenMote OpenBattery platform
+ * @{
+ * 
  * \file
  *      Erbium (Er) REST Engine for the Openmote platform.
  * \author
- *      Matthias Kovatsch <kovatsch@inf.ethz.ch>
+ *      Johan Bregell <johan_bregell@hotmail.com>
  */
 
 #include <stdio.h>
@@ -110,3 +116,7 @@ PROCESS_THREAD(er_example_server, ev, data)
 
   PROCESS_END();
 }
+/**
+ * @}
+ * @}
+ */

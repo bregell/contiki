@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Institute for Pervasive Computing, ETH Zurich
+ * Copyright (c) 2013, Johan Bregell, i3tex AB
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,10 +30,16 @@
  */
 
 /**
+ * \addtogroup openmote-examples 
+ * @{
+ * 
+ * \defgroup openmote-erbium-server Erbium server for the OpenMote OpenBattery platform
+ * @{
+ * 
  * \file
- *      Erbium (Er) example project configuration.
+ *      OpenMote Erbium Server project configuration.
  * \author
- *      Matthias Kovatsch <kovatsch@inf.ethz.ch>
+ *      Johan Bregell <johan_bregell@hotmail.com>
  */
 
 #ifndef __PROJECT_ERBIUM_CONF_H__
@@ -95,3 +101,8 @@
 /* Enable client-side support for COAP observe */
 #define COAP_OBSERVE_CLIENT 1
 #endif /* __PROJECT_ERBIUM_CONF_H__ */
+/**
+ * @}
+ * @}
+ */
+ 

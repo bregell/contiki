@@ -72,3 +72,7 @@ PROCESS_THREAD(test_max44009_process, ev, data)
   }
   PROCESS_END();
 }
+/**
+ * @}
+ * @}
+ */

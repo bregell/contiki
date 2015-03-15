@@ -34,7 +34,7 @@
  * \addtogroup platform
  * @{
  *
- * \defgroup openmote
+ * \defgroup openmote The OpenMote Platform
  *
  * \file
  * Driver for the MAX44009 light sensor in OpenMote-CC2538.

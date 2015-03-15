@@ -33,10 +33,13 @@
  * \addtogroup platform
  * @{
  *
- * \defgroup openmote
+ * \defgroup openmote The OpenMote Platform
  *
  * \file
  * Implementation of a generic module controlling OpenMote-CC2538 sensors.
+ * 
+ * \author 
+ * Johan Bregell <johan_bregell@hotmail.com>
  */
 #ifndef OPENMOTE_SENSORS_H_
 #define OPENMOTE_SENSORS_H_

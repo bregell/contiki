@@ -2,7 +2,7 @@
  * \addtogroup platform
  * @{
  *
- * \defgroup openmote
+ * \defgroup openmote The OpenMote Platform The OpenMote Platform
  *
  * \file
  * Configuration for the OpenMote-CC2538 platform.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Institute for Pervasive Computing, ETH Zurich
+ * Copyright (c) 2013, Johan Bregell, i3tex AB
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,12 @@
  */
 
 /**
+ * \addtogroup openmote-examples 
+ * @{
+ * 
+ * \defgroup openmote-erbium-server Erbium server for the OpenMote OpenBattery platform
+ * @{
+ * 
  * \file
  *      Example resource
  * \author
@@ -80,3 +86,8 @@ res_get_handler(void *request, void *response, uint8_t *buffer, uint16_t preferr
   REST.set_header_etag(response, (uint8_t *)&length, 1);
   REST.set_response_payload(response, buffer, length);
 }
+/**
+ * @}
+ * @}
+ */
+ 
