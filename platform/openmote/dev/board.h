@@ -33,7 +33,7 @@
  * \addtogroup platform
  * @{
  *
- * \defgroup openmote
+ * \defgroup openmote The OpenMote Platform
  *
  * \file
  * Header file with definitions related to the I/O connections on the

@@ -76,3 +76,7 @@ PROCESS_THREAD(test_sht21_process, ev, data)
 
   PROCESS_END();
 }
+/**
+ * @}
+ * @}
+ */

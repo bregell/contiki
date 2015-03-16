@@ -34,7 +34,7 @@
  * \addtogroup platform
  * @{
  *
- * \defgroup openmote
+ * \defgroup openmote The OpenMote Platform
  *
  * \file
  * Driver for the ADXL346 acceleration sensor in OpenMote-CC2538.
@@ -44,8 +44,9 @@
  */
 
 /*---------------------------------------------------------------------------*/
+#include "lib/sensors.h"
 #include "dev/i2c.h"
-#include "adxl346.h"
+#include "dev/adxl346.h"
 /*---------------------------------------------------------------------------*/
 /* ADDRESS AND IDENTIFIER */
 #define ADXL346_ADDRESS                     (0x53)
@@ -143,6 +144,66 @@
 #define ADXL346_DATA_FORMAT_RANGE_PM_4g     (1)
 #define ADXL346_DATA_FORMAT_RANGE_PM_8g     (2)
 #define ADXL346_DATA_FORMAT_RANGE_PM_16g    (3)
+/*---------------------------------------------------------------------------*/
+/**
+ *
+ */
+static int
+adxl346_value(int type)
+{
+  switch(type) {
+    case ADXL346_X_VAL :
+      return (int)adxl346_read_x();
+    case ADXL346_Y_VAL :
+      return (int)adxl346_read_y();
+    case ADXL346_Z_VAL :
+      return (int)adxl346_read_z();
+  }
+  return 0;
+}
+/**
+ *
+ */
+static int
+adxl346_config(int type, int value)
+{
+  switch(type) {
+    case SENSORS_HW_INIT :
+      adxl346_init();
+      return 0;
+    case SENSORS_ACTIVE :
+      switch(value) {
+        case 0 :
+          adxl346_set_config(ADXL346_POWER_CTL_ADDR, 0);
+          break;
+        case 1 :
+          adxl346_set_config(ADXL346_POWER_CTL_ADDR, ADXL346_POWER_CTL_MEASURE);
+          break;
+      }
+      break;
+    //case SENSORS_CONFIG :
+      //adxl346_set_config(&value, &value[1]);
+      //break;
+  }
+  return 0;
+}
+/**
+ *
+ */
+static int
+adxl346_status(int type){
+  return (int)adxl346_is_present();
+}
+/**
+ *
+ */
+void
+adxl346_set_config(int reg, int config){
+  uint8_t data[2];
+  data[0] = reg;
+  data[1] = config;
+  i2c_burst_send(ADXL346_ADDRESS, data, sizeof(data));
+}
 /*---------------------------------------------------------------------------*/
 /**
  *
@@ -246,4 +307,5 @@ adxl346_read_z(void)
   return z;
 }
 /*---------------------------------------------------------------------------*/
+SENSORS_SENSOR(acceleration_sensor, "Acceleration Sensor", adxl346_value, adxl346_config, adxl346_status);
 /** @} */

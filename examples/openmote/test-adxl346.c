@@ -75,3 +75,7 @@ PROCESS_THREAD(test_adxl346_process, ev, data)
 
   PROCESS_END();
 }
+/**
+ * @}
+ * @}
+ */

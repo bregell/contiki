@@ -1,4 +1,7 @@
 /**
+ * \addtogroup cc2538
+ * @{
+ * 
  * \addtogroup cc2538-i2c cc2538 I2C Control
  * @{
  *

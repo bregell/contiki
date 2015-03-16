@@ -185,18 +185,20 @@ uint8_t i2c_single_send(uint8_t slave_addr, uint8_t data);
 uint8_t i2c_single_receive(uint8_t slave_addr, uint8_t *data);
 
 /**
- * \brief      Perform all operations to send a burst of bytes to a slave
- * \param slave_addr The adress of the slave to which data are sent
- * \param data The data to send to the slave
- * \return     Return the value of i2c_master_error() after the I2C operation
+ * \brief   Perform all operations to send a burst of bytes to a slave
+ * \param 	slave_addr 	The adress of the slave to which data are sent
+ * \param 	data 		The data to send to the slave
+ * \param 	size		The size of the data array
+ * \return  Return the value of i2c_master_error() after the I2C operation
  */
 uint8_t i2c_burst_send(uint8_t slave_addr, uint8_t *data, uint8_t size);
 
 /**
- * \brief      Perform all operations to receive a burst of bytes from a slave
- * \param slave_addr The adress of the slave from which data are received
- * \param data A pointer to store the received data
- * \return     Return the value of i2c_master_error() after the I2C operation
+ * \brief	Perform all operations to receive a burst of bytes from a slave
+ * \param 	slave_addr 	The adress of the slave from which data are received
+ * \param 	data 		A pointer to store the received data
+ * \param 	size		The size of the data array
+ * \return  Return the value of i2c_master_error() after the I2C operation
  */
 uint8_t i2c_burst_receive(uint8_t slave_addr, uint8_t *data, uint8_t size);
 
