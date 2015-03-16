@@ -204,7 +204,7 @@ max44009_read_light(void)
   uint8_t exponent, mantissa;
   uint8_t max44009_data[2];
   uint16_t result;
-
+  
   i2c_single_send(MAX44009_ADDRESS, MAX44009_LUX_HIGH_ADDR);
   i2c_single_receive(MAX44009_ADDRESS, &max44009_data[0]);
   i2c_single_send(MAX44009_ADDRESS, MAX44009_LUX_LOW_ADDR);
@@ -227,12 +227,14 @@ max44009_convert_light(uint16_t lux)
   uint8_t exponent, mantissa;
   float result = 0.045;
 
-  exponent = (lux >> 8) & 0xFF;
-  exponent = (exponent == 0x0F ? exponent & 0x0E : exponent);
+  exponent = (lux >> 8) & 0x0F;
+  if(exponent == 15){
+    return -1;
+  }
+  
+  mantissa = lux & 0xFF;
 
-  mantissa = (lux >> 0) & 0xFF;
-
-  result *= 2 ^ exponent * mantissa;
+  result *= (1 << exponent) * mantissa;
 
   return result;
 }

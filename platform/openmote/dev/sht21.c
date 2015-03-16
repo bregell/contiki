@@ -222,7 +222,7 @@ sht21_convert_temperature(uint16_t temperature)
   float result;
 
   result = -46.85;
-  result += 175.72 * (temperature / 65536);
+  result += 175.72*(float)temperature/65536.0;
 
   return result;
 }
@@ -254,7 +254,7 @@ sht21_convert_humidity(uint16_t humidity)
   float result;
 
   result = -6.0;
-  result += 125.0 * humidity / 65536;
+  result += 125.0*(float)humidity/65536.0;
 
   return result;
 }
