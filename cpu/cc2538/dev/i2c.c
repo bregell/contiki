@@ -211,4 +211,7 @@ i2c_burst_receive(uint8_t slave_addr, uint8_t *data, uint8_t size)
 	return I2C_MASTER_ERR_NONE;
 }
 /*---------------------------------------------------------------------------*/
-/** @} */
+/** 
+ * @} 
+ * @}
+ **/
