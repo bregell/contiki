@@ -84,18 +84,22 @@ RESOURCE(res_temp,
 static void
 res_get_handler(void *request, void *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
+  float res = 100;
   uint16_t sht21_raw_temp = temp_sensor.value(SHT21_TEMP_VAL);
+  float sht21_temp = sht21_convert_temperature(sht21_raw_temp);
+  int sht21_temp_h = (int)sht21_temp;
+  int sht21_temp_d = (int)((sht21_temp - (float)sht21_temp_h)*res);
   unsigned int accept = -1;
 
   REST.get_header_accept(request, &accept);
   if(accept == -1 || accept == REST.type.TEXT_PLAIN){
     REST.set_header_content_type(request, REST.type.TEXT_PLAIN);
-    snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "%u", (int)sht21_raw_temp);
+    snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "%d.%d",sht21_temp_h, sht21_temp_d);
     REST.set_response_payload(response, (uint8_t *)buffer, strlen((char *)buffer));
     fade(LEDS_GREEN);
   } else if(accept == REST.type.APPLICATION_JSON){
     REST.set_header_content_type(request, REST.type.APPLICATION_JSON);
-    snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "{'raw_temp':%u}", (int)sht21_raw_temp);
+    snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "{'temp':%d.%d}", sht21_temp_h, sht21_temp_d);
     REST.set_response_payload(response, (uint8_t *)buffer, strlen((char *)buffer));
     fade(LEDS_GREEN);
   } else {

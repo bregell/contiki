@@ -66,17 +66,21 @@ RESOURCE(res_light,
 static void
 res_get_handler(void *request, void *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
+  float res = 100;
   uint16_t max44009_raw_light = light_sensor.value(MAX44009_LIGHT_VAL);
+  float max44009_light = max44009_convert_light(max44009_raw_light);
+  int max44009_light_h = (int)max44009_light;
+  int max44009_light_d = (int)((max44009_light - (float)max44009_light_h)*res);
   unsigned int accept = -1;
 
   REST.get_header_accept(request, &accept);
   if(accept == -1 || accept == REST.type.TEXT_PLAIN){
     REST.set_header_content_type(request, REST.type.TEXT_PLAIN);
-    snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "%u", (int)max44009_raw_light);
+    snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "%d.%d", max44009_light_h, max44009_light_d);
     REST.set_response_payload(response, (uint8_t *)buffer, strlen((char *)buffer));
   } else if(accept == REST.type.APPLICATION_JSON){
     REST.set_header_content_type(request, REST.type.APPLICATION_JSON);
-    snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "{'raw_light':%u, 'Conv':'2^Exp*Mant*0.72','where':{'Exp':'8*B8+4*B7+2*B6+B5','Mant':'8*B4+4*B3+2*B2+B1'}}", (int)max44009_raw_light);
+    snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "{'lux':%d.%d}", max44009_light_h, max44009_light_d);
     REST.set_response_payload(response, (uint8_t *)buffer, strlen((char *)buffer));
   } else {
     REST.set_response_status(response, REST.status.NOT_ACCEPTABLE);

@@ -66,17 +66,21 @@ RESOURCE(res_humidity,
 static void
 res_get_handler(void *request, void *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
+  float res = 100;
   uint16_t sht21_raw_humidity = humidity_sensor.value(SHT21_HUMIDITY_VAL);
+  float sht21_humidity = sht21_convert_humidity(sht21_raw_humidity);
+  int sht21_humidity_h = (int)sht21_humidity;
+  int sht21_humidity_d = (int)((sht21_humidity - (float)sht21_humidity_h)*res);
   unsigned int accept = -1;
 
   REST.get_header_accept(request, &accept);
   if(accept == -1 || accept == REST.type.TEXT_PLAIN){
     REST.set_header_content_type(request, REST.type.TEXT_PLAIN);
-    snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "%u", (int)sht21_raw_humidity);
+    snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "%d.%d", sht21_humidity_h, sht21_humidity_d);
     REST.set_response_payload(response, (uint8_t *)buffer, strlen((char *)buffer));
   } else if(accept == REST.type.APPLICATION_JSON){
     REST.set_header_content_type(request, REST.type.APPLICATION_JSON);
-    snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "{'raw_humidity':%u, 'conv':'-6+125*raw_humidity\/2^16'}", (int)sht21_raw_humidity);
+    snprintf((char *)buffer, REST_MAX_CHUNK_SIZE, "{'humidity(%%)':%d.%d}", sht21_humidity_h, sht21_humidity_d);
     REST.set_response_payload(response, (uint8_t *)buffer, strlen((char *)buffer));
   } else {
     REST.set_response_status(response, REST.status.NOT_ACCEPTABLE);

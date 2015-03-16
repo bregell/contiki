@@ -67,7 +67,9 @@
  */
 extern resource_t
   res_hello,
-  res_temp;
+  res_temp, 
+  res_humidity, 
+  res_light;
 
 PROCESS(er_example_server, "Erbium Example Server");
 AUTOSTART_PROCESSES(&er_example_server);
