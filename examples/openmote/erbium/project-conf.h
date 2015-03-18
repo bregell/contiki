@@ -30,12 +30,12 @@
  */
 
 /**
- * \addtogroup openmote-examples 
+ * \addtogroup openmote-examples
  * @{
- * 
+ *
  * \defgroup openmote-erbium-server Erbium server for the OpenMote OpenBattery platform
  * @{
- * 
+ *
  * \file
  *      OpenMote Erbium Server project configuration.
  * \author
@@ -46,13 +46,13 @@
 #define __PROJECT_ERBIUM_CONF_H__
 
 /* Custom channel and PAN ID configuration for your project. */
-/*
+
 #undef RF_CHANNEL
 #define RF_CHANNEL                     26
 
 #undef IEEE802154_CONF_PANID
 #define IEEE802154_CONF_PANID          0xABCD
-*/
+
 /* IP buffer size must match all other hops, in particular the border router. */
 /*
 #undef UIP_CONF_BUFFER_SIZE
@@ -63,18 +63,18 @@
 /* For projects, optimize memory and enable RDC and CSMA again. */
 
 #undef NETSTACK_CONF_RDC
-#define NETSTACK_CONF_RDC              nullrdc_driver
+#define NETSTACK_CONF_RDC              drowsie_driver
 
 /* Disabling TCP on CoAP nodes. */
 #undef UIP_CONF_TCP
 #define UIP_CONF_TCP                   0
-/*
+
 #undef NETSTACK_CONF_MAC
 #define NETSTACK_CONF_MAC            csma_driver
-*/
+
 /* Increase rpl-border-router IP-buffer when using more than 64. */
 #undef REST_MAX_CHUNK_SIZE
-#define REST_MAX_CHUNK_SIZE            128
+#define REST_MAX_CHUNK_SIZE            32
 
 /* Estimate your header size, especially when using Proxy-Uri. */
 /*
@@ -105,4 +105,3 @@
  * @}
  * @}
  */
- 
