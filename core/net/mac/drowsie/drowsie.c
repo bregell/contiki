@@ -27,9 +27,9 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+
 /*
- * This code is based on contikimac.c, which carries the following 
+ * This code is based on contikimac.c, which carries the following
  * copyright header:
  *
  * Copyright (c) 2010, Swedish Institute of Computer Science.
@@ -77,9 +77,10 @@
 #include "dev/radio.h"
 #include "dev/watchdog.h"
 #include "lib/random.h"
-#include "net/mac/contikimac.h"
+#include "net/mac/contikimac/contikimac.h"
+#include "net/linkaddr.h"
 #include "net/netstack.h"
-#include "net/rime.h"
+#include "net/rime/rime.h"
 #include "sys/compower.h"
 #include "sys/pt.h"
 #include "sys/rtimer.h"
@@ -238,7 +239,7 @@ static volatile unsigned char radio_is_on = 0;
 #endif /* MIN */
 
 struct seqno {
-  rimeaddr_t sender;
+  linkaddr_t sender;
   uint8_t seqno;
 };
 
@@ -307,11 +308,11 @@ powercycle(struct ctimer *c)
 /*---------------------------------------------------------------------------*/
 static int
 send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
-	    struct rdc_buf_list *buf_list,
+        struct rdc_buf_list *buf_list,
             int is_receiver_awake)
 {
   rtimer_clock_t t0;
-  rtimer_clock_t encounter_time = 0;
+  //rtimer_clock_t encounter_time = 0;
   int strobes;
   uint8_t got_strobe_ack = 0;
   int hdrlen, len;
@@ -327,8 +328,8 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
     return MAC_TX_ERR_FATAL;
   }
 
-  packetbuf_set_addr(PACKETBUF_ADDR_SENDER, &rimeaddr_node_addr);
-  if(rimeaddr_cmp(packetbuf_addr(PACKETBUF_ADDR_RECEIVER), &rimeaddr_null)) {
+  packetbuf_set_addr(PACKETBUF_ADDR_SENDER, &linkaddr_node_addr);
+  if(linkaddr_cmp(packetbuf_addr(PACKETBUF_ADDR_RECEIVER), &linkaddr_null)) {
     is_broadcast = 1;
     PRINTDEBUG("drowsie: send broadcast\n");
 
@@ -406,7 +407,7 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
            NETSTACK_RADIO.receiving_packet(), NETSTACK_RADIO.pending_packet());
     return MAC_TX_COLLISION;
   }
-  
+
   /* Switch off the radio to ensure that we didn't start sending while
      the radio was doing a channel check. */
   off();
@@ -477,19 +478,19 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
 
     {
       rtimer_clock_t wt;
-      rtimer_clock_t txtime;
-      int ret;
+      //rtimer_clock_t txtime;
+      //volatile int ret;
 
-      txtime = RTIMER_NOW();
+      //txtime = RTIMER_NOW();
       ret = NETSTACK_RADIO.transmit(transmit_len);
 
 #if RDC_CONF_HARDWARE_ACK
      /* For radios that block in the transmit routine and detect the
-	ACK in hardware */
+    ACK in hardware */
       if(ret == RADIO_TX_OK) {
         if(!is_broadcast) {
           got_strobe_ack = 1;
-          encounter_time = txtime;
+          //encounter_time = txtime;
           break;
         }
       } else if(ret == RADIO_TX_NOACK) {
@@ -513,7 +514,7 @@ send_packet(mac_callback_t mac_callback, void *mac_callback_ptr,
         len = NETSTACK_RADIO.read(ackbuf, ACK_LEN);
         if(len == ACK_LEN && seqno == ackbuf[ACK_LEN - 1]) {
           got_strobe_ack = 1;
-          encounter_time = txtime;
+          //encounter_time = txtime;
           RIMESTATS_ADD(ackrx);
           break;
         } else {
@@ -638,10 +639,10 @@ input_packet(void)
 
     if(packetbuf_datalen() > 0 &&
        packetbuf_totlen() > 0 &&
-       (rimeaddr_cmp(packetbuf_addr(PACKETBUF_ADDR_RECEIVER),
-                     &rimeaddr_node_addr) ||
-        rimeaddr_cmp(packetbuf_addr(PACKETBUF_ADDR_RECEIVER),
-                     &rimeaddr_null))) {
+       (linkaddr_cmp(packetbuf_addr(PACKETBUF_ADDR_RECEIVER),
+                     &linkaddr_node_addr) ||
+        linkaddr_cmp(packetbuf_addr(PACKETBUF_ADDR_RECEIVER),
+                     &linkaddr_null))) {
       /* This is a regular packet that is destined to us or to the
          broadcast address. */
 
@@ -650,7 +651,7 @@ input_packet(void)
       if(we_are_receiving_burst) {
         on();
         /* Set a timer to turn the radio off in case we do not receive
-	   a next packet */
+       a next packet */
         ctimer_set(&ct, INTER_PACKET_DEADLINE, recv_burst_off, NULL);
       } else {
         off();
@@ -663,7 +664,7 @@ input_packet(void)
         int i;
         for(i = 0; i < MAX_SEQNOS; ++i) {
           if(packetbuf_attr(PACKETBUF_ATTR_PACKET_ID) == received_seqnos[i].seqno &&
-             rimeaddr_cmp(packetbuf_addr(PACKETBUF_ADDR_SENDER),
+             linkaddr_cmp(packetbuf_addr(PACKETBUF_ADDR_SENDER),
                           &received_seqnos[i].sender)) {
             /* Drop the packet. */
             /*        printf("Drop duplicate Drowsie layer packet\n");*/
@@ -675,7 +676,7 @@ input_packet(void)
                  sizeof(struct seqno));
         }
         received_seqnos[0].seqno = packetbuf_attr(PACKETBUF_ATTR_PACKET_ID);
-        rimeaddr_copy(&received_seqnos[0].sender,
+        linkaddr_copy(&received_seqnos[0].sender,
                       packetbuf_addr(PACKETBUF_ADDR_SENDER));
       }
 
@@ -732,7 +733,7 @@ duty_cycle(void)
   return (1ul * CLOCK_SECOND * CYCLE_TIME) / RTIMER_ARCH_SECOND;
 }
 /*---------------------------------------------------------------------------*/
-const struct rdc_driver  = {
+const struct rdc_driver drowsie_driver = {
   "Drowsie",
   init,
   qsend_packet,
